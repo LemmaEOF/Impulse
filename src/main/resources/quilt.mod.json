@@ -1,23 +1,26 @@
 {
-  "schemaVersion": 1,
+  "schema_version": 1,
   "quilt_loader": {
-    "group": "io.github.cottonmc",
-    "id": "starter",
+    "group": "gay.lemmaeof",
+    "id": "impulse",
     "version": "${version}",
     "metadata": {
-      "name": "Fabric Starter",
-      "icon": "assets/starter/icon.png",
-      "description": "Template for starting out Fabric mods",
+      "name": "Impulse",
+      "icon": "assets/impulse/icon.png",
+      "description": "Assorted little utilities for Minecraft mods to work with.",
       "license": "MIT",
       "contact": {
-        "sources": "https://github.com/CottonMC/FabricStarter"
+        "sources": "https://github.com/LemmaEOF/Impulse"
       }
     },
     "intermediate_mappings": "net.fabricmc:intermediary",
     "environment": "*",
     "entrypoints": {
       "init": [
-        "io.github.cottonmc.starter.FabricStarter"
+        "gay.lemmaeof.impulse.Impulse"
+      ],
+      "client_init": [
+        "gay.lemmaeof.impulse.ImpulseClient"
       ]
     },
     "depends": [
@@ -27,5 +30,5 @@
       }
     ]
   },
-  "mixin": "mixins.starter.json"
+  "mixin": "mixins.impulse.json"
 }
