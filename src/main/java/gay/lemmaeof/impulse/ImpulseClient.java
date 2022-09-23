@@ -31,7 +31,7 @@ public class ImpulseClient implements ClientModInitializer {
 
 			@Override
 			public int getTotalSegments(ClientPlayerEntity player) {
-				return 40;
+				return 30;
 			}
 
 			@Override

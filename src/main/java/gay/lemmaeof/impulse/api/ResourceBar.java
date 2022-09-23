@@ -17,13 +17,13 @@ public interface ResourceBar {
 
 	/**
 	 * @param player The player seeing this bar.
-	 * @return The length the bar should be when all segments are full, in case it's not enough resources for another segment.
+	 * @return The length the bar should be when all boxes are full, in case it's not enough resources for another full bar.
 	 */
 	float getTopBarPercentage(ClientPlayerEntity player);
 
 	/**
 	 * @param player The player seeing this bar.
-	 * @return How many total segments the bar should have, including empty segments.
+	 * @return How many total segments the bar should have, including empty segments and the final bar above the boxes.
 	 */
 	int getTotalSegments(ClientPlayerEntity player);
 

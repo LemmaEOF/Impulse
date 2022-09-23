@@ -42,7 +42,7 @@ public class BarHud extends DrawableHelper implements HudRenderCallback {
 
 			if (!bar.isBarVisible(client.player)) {
 				float fadeTime = bars.getFloat(bar);
-				if (fadeTime >= bar.getBarFadeoutTime(client.player) || fadeTime == -1f) continue;
+				if (fadeTime >= bar.getBarFadeoutTime(client.player) || fadeTime < 0) continue;
 				alpha = 1 - (fadeTime / bar.getBarFadeoutTime(client.player));
 				bars.put(bar, fadeTime + (tickDelta / 20f));
 			} else {
@@ -81,7 +81,7 @@ public class BarHud extends DrawableHelper implements HudRenderCallback {
 		int rows = 1;
 
 		float totalFill = bar.getCurrentBarFill(client.player);
-		int boxes = bar.getTotalSegments(client.player);
+		int boxes = bar.getTotalSegments(client.player) - 1;
 
 		if (!ImpulseConfig.bigResourceBars && bar.getBarStyle(client.player) == ResourceBar.BarStyle.SEGMENTED) {
 
@@ -89,16 +89,20 @@ public class BarHud extends DrawableHelper implements HudRenderCallback {
 
 			int fullBoxes = (int) totalFill;
 			float currentBarFill = totalFill - fullBoxes;
-			if (fullBoxes > boxes) fullBoxes = boxes;
+			if (fullBoxes > boxes) {
+				fullBoxes = boxes;
+				if (currentBarFill == 0f) currentBarFill = 1f;
+			}
 
 			boolean needsPlus = boxes > 36;
 			boolean plusOn = fullBoxes > 36;
 
-			int barWidth = (int) (bar.getTopBarPercentage(client.player) * FULL_BAR_WIDTH);
+			int barWidth = fullBoxes == boxes? FULL_BAR_WIDTH : (int) (bar.getTopBarPercentage(client.player) * FULL_BAR_WIDTH);
 			if (barWidth < 1) barWidth = 1; //Never display a bar with length 0
 
 			int fgWidth = (int) (currentBarFill * FULL_BAR_WIDTH);
-			if (currentBarFill > 0 && fgWidth <= 0) fgWidth = 1; //never display an empty bar for *some* health
+			if (fgWidth > barWidth) fgWidth = barWidth; //Never display a bar fuller than the current max bar width
+			if (currentBarFill > 0 && fgWidth <= 0) fgWidth = 1; //Never display an empty bar for *some* resource
 
 			//bar BG: left edge, middle, right edge
 			blit(left, top, 1, 5, texUV(0), texUV(0), texUV(1), texUV(5));
