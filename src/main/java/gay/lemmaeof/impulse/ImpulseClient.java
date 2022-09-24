@@ -13,7 +13,7 @@ public class ImpulseClient implements ClientModInitializer {
 	@Override
 	public void onInitializeClient(ModContainer mod) {
 		HudRenderCallback.EVENT.register(new BarHud());
-		ResourceBars.addBar(new ResourceBar() { //for testing, TODO spin out into a testmod later
+		/*ResourceBars.addBar(new ResourceBar() { //for testing, TODO spin out into a testmod later
 			@Override
 			public Identifier getIconId() {
 				return new Identifier("minecraft", "textures/particle/bubble.png");
@@ -58,6 +58,6 @@ public class ImpulseClient implements ClientModInitializer {
 			public BarStyle getBarStyle(ClientPlayerEntity player) {
 				return BarStyle.SEGMENTED;
 			}
-		});
+		});*/
 	}
 }

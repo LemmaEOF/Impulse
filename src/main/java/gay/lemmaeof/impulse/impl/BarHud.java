@@ -9,12 +9,11 @@ import it.unimi.dsi.fastutil.objects.Object2FloatArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.Identifier;
 
-public class BarHud extends DrawableHelper implements HudRenderCallback {
+public class BarHud implements HudRenderCallback {
 
 	private static final Identifier BAR_TEX = new Identifier("impulse", "textures/gui/bars.png");
 	private static final int FULL_BAR_WIDTH = 98;
@@ -204,7 +203,7 @@ public class BarHud extends DrawableHelper implements HudRenderCallback {
 	}
 
 	private static void blit(int x, int y, int width, int height, int u, int v) {
-		innerBlit(x, y, x+width, y+height, 0d, texUV(u), texUV(v), texUV(u+width), texUV(v+height));
+		blit(x, y, x+width, y+height, texUV(u), texUV(v), texUV(u+width), texUV(v+height));
 	}
 
 	private static void blit(int x, int y, int width, int height, float u1, float v1, float u2, float v2) {
