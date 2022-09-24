@@ -17,10 +17,8 @@ import net.minecraft.util.Identifier;
 public class BarHud extends DrawableHelper implements HudRenderCallback {
 
 	private static final Identifier BAR_TEX = new Identifier("impulse", "textures/gui/bars.png");
-	//TODO: might be a good idea to embiggen bars, these are kinda dinky especially on small gui scales
-	private static final int FULL_BAR_WIDTH = 62;
+	private static final int FULL_BAR_WIDTH = 98;
 	private final MinecraftClient client = MinecraftClient.getInstance();
-	private static final float SCALE_FACTOR = 1.5f;
 
 	public static final Object2FloatMap<ResourceBar> bars = new Object2FloatArrayMap<>();
 
@@ -30,7 +28,6 @@ public class BarHud extends DrawableHelper implements HudRenderCallback {
 		RenderSystem.enableTexture();
 		RenderSystem.enableBlend();
 		RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-//		RenderSystem.enableAlphaTest();
 
 		//coords for each bar
 		int left = ImpulseConfig.barsX;
@@ -52,11 +49,10 @@ public class BarHud extends DrawableHelper implements HudRenderCallback {
 			int rowsUsed = drawBar(matrices, left, top, bar, alpha);
 
 			// Increment
-			top += (12 + (4 * (rowsUsed - 1)));
+			top += (16 + (6 * (rowsUsed - 1)));
 			RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 		}
 
-//		RenderSystem.disableAlphaTest();
 		RenderSystem.disableBlend();
 		RenderSystem.disableTexture();
 	}
@@ -68,9 +64,9 @@ public class BarHud extends DrawableHelper implements HudRenderCallback {
 		Identifier icon = bar.getIconId();
 		RenderSystem.setShaderTexture(0, icon);
 		RenderSystem.setShaderColor(1f, 1f, 1f, alpha);
-		blit(left, top, 9, 9);
+		blit(left, top, 13, 13);
 
-		left += 10;
+		left += 14;
 
 		//draw bar
 		float r = (color >> 16 & 255) / 255f;
@@ -105,13 +101,13 @@ public class BarHud extends DrawableHelper implements HudRenderCallback {
 			if (currentBarFill > 0 && fgWidth <= 0) fgWidth = 1; //Never display an empty bar for *some* resource
 
 			//bar BG: left edge, middle, right edge
-			blit(left, top, 1, 5, texUV(0), texUV(0), texUV(1), texUV(5));
-			blit(left + 1, top, barWidth, 5, texUV(1), texUV(0), texUV(barWidth + 1), texUV(5));
-			blit(left + barWidth + 1, top, 1, 5, texUV(63), texUV(0), texUV(64), texUV(5));
+			blit(left, top, 1, 7, 0, 0);
+			blit(left + 1, top, barWidth, 7, 1, 0);
+			blit(left + barWidth + 1, top, 1, 7, 99, 0);
 
 			if (boxes > 0) {
 				int boxesLeft = boxes;
-				int newTop = top + 4;
+				int newTop = top + 6;
 				for (int i = 0; i < rows; i++) {
 					int toDraw = 12;
 					if (boxesLeft > 12) {
@@ -120,32 +116,36 @@ public class BarHud extends DrawableHelper implements HudRenderCallback {
 						toDraw = boxesLeft;
 					}
 					//first box
-					blit(left, newTop, 6, 5, texUV(0), texUV(5), texUV(6), texUV(10));
-					int newLeft = left + 5;
+					blit(left, newTop, 9, 7, 0, 7);
+					int newLeft = left + 8;
 					//the rest of the boxes
 					for (int j = 1; j < toDraw; j++) {
-						blit(newLeft, newTop, 6, 5, texUV(6), texUV(5), texUV(12), texUV(10));
-						newLeft += 5;
+						if (j == toDraw - 1) {
+							blit(newLeft, newTop, 9, 7, 18, 7);
+						} else {
+							blit(newLeft, newTop, 9, 7, 9, 7);
+						}
+						newLeft += 8;
 					}
 					if (needsPlus) {
 						if (i < 2) {
-							blit(newLeft, newTop, 3, 5, texUV(19), texUV(5), texUV(22), texUV(10));
+							blit(newLeft, newTop, 4, 7, 27, 7);
 						} else {
-							blit(newLeft, newTop, 5, 5, texUV(22), texUV(5), texUV(27), texUV(10));
+							blit(newLeft, newTop, 7, 7, 31, 7);
 						}
 					}
-					newTop += 4;
+					newTop += 6;
 				}
 			}
 
 			if (!ImpulseConfig.disableResourceColors) RenderSystem.setShaderColor(r, g, b, alpha);
 			//bar FG: left edge, middle, right edge
-			blit(left, top, 1, 5, texUV(0), texUV(10), texUV(1), texUV(15));
-			blit(left + 1, top, fgWidth, 5, texUV(1), texUV(10), texUV(fgWidth + 1), texUV(15));
-			blit(left + fgWidth + 1, top, 1, 5, texUV(63), texUV(10), texUV(64), texUV(15));
+			blit(left, top, 1, 7, 0, 16);
+			blit(left + 1, top, fgWidth, 7, 1, 16);
+			blit(left + fgWidth + 1, top, 1, 7, 99, 16);
 			if (fullBoxes > 0) {
 				int boxesLeft = fullBoxes;
-				int newTop = top + 4;
+				int newTop = top + 6;
 				for (int i = 0; i < rows; i++) {
 					int toDraw = 12;
 					if (boxesLeft > 12) {
@@ -156,41 +156,44 @@ public class BarHud extends DrawableHelper implements HudRenderCallback {
 					}
 
 					//first box
-					blit(left, newTop, 6, 5, texUV(0), texUV(15), texUV(6), texUV(20));
-					int newLeft = left + 5;
+					blit(left, newTop, 9, 7, 0, 23);
+					int newLeft = left + 8;
 					//the rest of the boxes
 					for (int j = 1; j < toDraw; j++) {
-						blit(newLeft, newTop, 6, 5, texUV(6), texUV(15), texUV(12), texUV(20));
-						newLeft += 5;
+						if (j == toDraw - 1) {
+							blit(newLeft, newTop, 9, 7, 18, 23);
+						} else {
+							blit(newLeft, newTop, 9, 7, 9, 23);
+						}
+						newLeft += 8;
 					}
 					if (plusOn) {
 						if (i < 2) {
-							blit(newLeft, newTop, 3, 5, texUV(19), texUV(15), texUV(22), texUV(20));
+							blit(newLeft, newTop, 4, 7, 27, 23);
 						} else {
-							blit(newLeft, newTop, 5, 5, texUV(22), texUV(15), texUV(27), texUV(20));
+							blit(newLeft, newTop, 7, 7, 31, 23);
 						}
 					}
-					newTop += 4;
+					newTop += 6;
 				}
 			}
 		} else {
-//			rows = 2;
 			//bar BG: left edge, middle, right edge
-			blit(left, top, 1, 9, texUV(0), texUV(20), texUV(1), texUV(29));
-			blit(left + 1, top, 62, 9, texUV(1), texUV(20), texUV(63), texUV(29));
-			blit(left + 63, top, 1, 9, texUV(63), texUV(20), texUV(64), texUV(29));
+			blit(left, top, 1, 13, 0, 32);
+			blit(left + 1, top, 98, 9, 1, 32);
+			blit(left + 99, top, 1, 9, 99, 32);
 
 			if (!ImpulseConfig.disableResourceColors) RenderSystem.setShaderColor(r, g, b, alpha);
 			int fgWidth = (int) ((totalFill / (float) boxes) * FULL_BAR_WIDTH);
 			if (totalFill > 0 && fgWidth <= 0) fgWidth = 1; //never display an empty bar for *some* resource
 			//bar FG: left edge, middle, right edge
-			blit(left, top, 1, 9, texUV(0), texUV(29), texUV(1), texUV(38));
-			blit(left + 1, top, fgWidth, 9, texUV(1), texUV(29), texUV(fgWidth + 1), texUV(38));
-			blit(left + fgWidth + 1, top, 1, 9, texUV(63), texUV(29), texUV(64), texUV(38));
+			blit(left, top, 1, 13, 0, 48);
+			blit(left + 1, top, fgWidth, 13, 1, 48);
+			blit(left + fgWidth + 1, top, 1, 13, 99, 48);
 		}
 
 		if (bar.isVarValueVisible(client.player)) {
-			MinecraftClient.getInstance().textRenderer.drawWithShadow(matrices, "" + bar.getBarValue(client.player), left + 66, top, 0xFFFFFF);
+			MinecraftClient.getInstance().textRenderer.drawWithShadow(matrices, "" + bar.getBarValue(client.player), left + 102, top + 2, 0xFFFFFF);
 		}
 
 		return rows;
@@ -198,6 +201,10 @@ public class BarHud extends DrawableHelper implements HudRenderCallback {
 
 	private static void blit(int x, int y, int width, int height) {
 		blit(x, y, width, height, 0f, 0f, 1f, 1f);
+	}
+
+	private static void blit(int x, int y, int width, int height, int u, int v) {
+		innerBlit(x, y, x+width, y+height, 0d, texUV(u), texUV(v), texUV(u+width), texUV(v+height));
 	}
 
 	private static void blit(int x, int y, int width, int height, float u1, float v1, float u2, float v2) {
@@ -209,10 +216,10 @@ public class BarHud extends DrawableHelper implements HudRenderCallback {
 		Tessellator tess = Tessellator.getInstance();
 		BufferBuilder buffer = tess.getBufferBuilder();
 		buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
-		buffer.vertex(x1*SCALE_FACTOR, y2*SCALE_FACTOR, z).uv(u1, v2).next();
-		buffer.vertex(x2*SCALE_FACTOR, y2*SCALE_FACTOR, z).uv(u2, v2).next();
-		buffer.vertex(x2*SCALE_FACTOR, y1*SCALE_FACTOR, z).uv(u2, v1).next();
-		buffer.vertex(x1*SCALE_FACTOR, y1*SCALE_FACTOR, z).uv(u1, v1).next();
+		buffer.vertex(x1, y2, z).uv(u1, v2).next();
+		buffer.vertex(x2, y2, z).uv(u2, v2).next();
+		buffer.vertex(x2, y1, z).uv(u2, v1).next();
+		buffer.vertex(x1, y1, z).uv(u1, v1).next();
 		BufferRenderer.drawWithShader(buffer.end());
 	}
 
