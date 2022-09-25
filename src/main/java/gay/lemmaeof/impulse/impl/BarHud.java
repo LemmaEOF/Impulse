@@ -203,7 +203,7 @@ public class BarHud implements HudRenderCallback {
 	}
 
 	private static void blit(int x, int y, int width, int height, int u, int v) {
-		blit(x, y, x+width, y+height, texUV(u), texUV(v), texUV(u+width), texUV(v+height));
+		blit(x, y, width, height, texUV(u), texUV(v), texUV(u+width), texUV(v+height));
 	}
 
 	private static void blit(int x, int y, int width, int height, float u1, float v1, float u2, float v2) {
